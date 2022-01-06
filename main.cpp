@@ -8,16 +8,6 @@
 #include "Variables/number.h"
 #include "Variables/default_function.h"
 
-Variable *addition(std::vector<Variable *> arguments)
-{
-    return new Number(dynamic_cast<Number *>(arguments[0])->getData() + dynamic_cast<Number *>(arguments[1])->getData());
-}
-
-Variable *substract(std::vector<Variable *> arguments)
-{
-    return new Number(dynamic_cast<Number *>(arguments[0])->getData() - dynamic_cast<Number *>(arguments[1])->getData());
-}
-
 int main()
 {
     Variable *(*add)(std::vector<Variable *>) = substract;
@@ -31,7 +21,7 @@ int main()
 
     Variable *test = new DefaultFunction("sub", args2, addition);
 
-    Variable *func = new Function("func", test);
+    Variable *func = new Function("func", test, args2);
     
     std::cout << dynamic_cast<Number *>(func->execute())->getData();
 

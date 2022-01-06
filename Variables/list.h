@@ -7,13 +7,14 @@
 class List : public Variable
 {
 private:
-  std::vector<Number> data;
+  std::vector<Variable*> data;
 
 public:
-  List(const std::vector<Number> in_data);
+  List(const std::vector<Number*> in_data);
   List(const std::string in_list);
   Variable *execute() override;
   const std::vector<Number> getData() const;
+  bool operator==(const List& other) const;
 };
 
 #endif

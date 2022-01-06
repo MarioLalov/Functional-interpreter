@@ -1,18 +1,36 @@
 #ifndef DEF_FUN_H
 #define DEF_FUN_H
 
-#include "variables.h"
+#include <cmath>
+#include <typeinfo>
+#include "function.h"
+#include "number.h"
+#include "list.h"
 
-class DefaultFunction : public Variable
+class DefaultFunction : public Function
 {
 private:
-  std::string name;
-  std::vector<Variable *> arguments;
   procedure to_be_executed;
 
 public:
   DefaultFunction(std::string in_name, std::vector<Variable *> in_arguments, procedure in_procedure);
   Variable *execute() override;
 };
+
+//default functions
+//arithmetics
+Variable *addition(std::vector<Variable *> arguments);
+Variable *substract(std::vector<Variable *> arguments);
+Variable *multiply(std::vector<Variable *> arguments);
+Variable *divide(std::vector<Variable *> arguments);
+Variable *modulo(std::vector<Variable *> arguments);
+Variable *sqareRoot(std::vector<Variable *> arguments);
+
+//helpers
+Variable *length(std::vector<Variable *> arguments);
+
+
+
+
 
 #endif

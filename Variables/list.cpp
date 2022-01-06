@@ -1,11 +1,13 @@
 #include "list.h"
 
-List::List(const std::vector<Number> in_data)
+List::List(const std::vector<Number*> in_data)
 {
     for (std::size_t i = 0; i < in_data.size(); i++)
     {
         data.push_back(data[i]);
     }
+
+    body = nullptr;
 }
 
 List::List(const std::string in_list)
@@ -16,20 +18,20 @@ List::List(const std::string in_list)
     while (in_list[cnt] != ']')
     {
         //skip empty spaces
-        if(in_list[cnt] == ' ')
+        if (in_list[cnt] == ' ')
         {
             cnt++;
             continue;
         }
 
-        //get number
+        //get 
         std::string num;
         while (in_list[cnt] != ',' && in_list[cnt] != ' ')
         {
             //end of list
-            if(in_list[cnt] == ']')
+            if (in_list[cnt] == ']')
             {
-                data.push_back(std::stof(num));
+                //data.push_back(std::stof(num));
 
                 return;
             }
@@ -38,9 +40,11 @@ List::List(const std::string in_list)
             cnt++;
         }
 
-        data.push_back(std::stof(num));
+        //data.push_back(std::stof(num));
         cnt++;
     }
+
+    body = nullptr;
 }
 
 Variable *List::execute()
@@ -50,5 +54,25 @@ Variable *List::execute()
 
 const std::vector<Number> List::getData() const
 {
-    return data;
+   // return data;
+}
+
+bool List::operator==(const List& other) const
+{
+    if (data.size() == other.data.size())
+    {
+        for(std::size_t i = 0; i < data.size(); i++)
+        {
+            if(data[i] != other.data[i])
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
 }

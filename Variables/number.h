@@ -13,6 +13,8 @@ public:
   Number(const std::string num);
   Variable *execute() override;
   const float getData() const;
+  bool operator==(const Number& other) const;
+  bool operator!=(const Number& other) const;
 };
 
 #endif
