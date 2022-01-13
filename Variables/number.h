@@ -11,7 +11,7 @@ private:
 public:
   Number(const float in_data);
   Number(const std::string num);
-  Variable *execute() override;
+  Variable *execute(std::vector<Variable* > args) override;
   const float getData() const;
   bool operator==(const Number& other) const;
   bool operator!=(const Number& other) const;

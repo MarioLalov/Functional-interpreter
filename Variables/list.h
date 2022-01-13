@@ -12,7 +12,7 @@ private:
 public:
   List(const std::vector<Number*> in_data);
   List(const std::string in_list);
-  Variable *execute() override;
+  Variable *execute(std::vector<Variable* > args) override;
   const std::vector<Number> getData() const;
   bool operator==(const List& other) const;
 };

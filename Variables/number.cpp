@@ -17,7 +17,7 @@ const float Number::getData() const
     return data;
 }
 
-Variable *Number::execute()
+Variable *Number::execute(std::vector<Variable* > args)
 {
     return this;
 }

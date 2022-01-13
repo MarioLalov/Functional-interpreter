@@ -37,7 +37,7 @@ Function::Function(std::string in_name, std::string in_body)
     }
 }
 
-Variable *Function::execute()
+Variable *Function::execute(std::vector<Variable* > args)
 {
-    return body->execute();
+    return body->execute(args);
 }

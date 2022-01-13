@@ -14,7 +14,7 @@ private:
 
 public:
   DefaultFunction(std::string in_name, std::vector<Variable *> in_arguments, procedure in_procedure);
-  Variable *execute() override;
+  Variable *execute(std::vector<Variable* > args) override;
 };
 
 //default functions

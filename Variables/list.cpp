@@ -47,7 +47,7 @@ List::List(const std::string in_list)
     body = nullptr;
 }
 
-Variable *List::execute()
+Variable *List::execute(std::vector<Variable* > args)
 {
     return this;
 }

@@ -9,13 +9,13 @@ DefaultFunction::DefaultFunction(std::string in_name, std::vector<Variable *> in
     body = nullptr;
 }
 
-Variable *DefaultFunction::execute()
+Variable *DefaultFunction::execute(std::vector<Variable* > args)
 {
     std::vector<Variable *> executed;
 
     for (std::size_t i = 0; i < arguments.size(); i++)
     {
-        executed.push_back(arguments[i]->execute());
+        executed.push_back(args[i]->execute());
     }
 
     return to_be_executed(executed);
