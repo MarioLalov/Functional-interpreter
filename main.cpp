@@ -37,8 +37,10 @@ int main()
      delete test;
  */
 
-    std::string defintion = "fun -> sum(mod(#0, #0), 1)";
-    std::string expression = "fun(5)";
+    //std::string defintion = "fun -> sum(mod(#0, #1), 1)";
+    //std::string expression = "fun(5, 2)";
+    std::string defintion = "fun -> add(add(#0, #1), 1)";
+    std::string expression = "fun(7, 2)";
     Lexer lex1(defintion);
     Lexer lex2(expression);
     // lex.print();

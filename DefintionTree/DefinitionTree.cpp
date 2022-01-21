@@ -5,6 +5,16 @@ DefFunctionNode::DefFunctionNode(std::string &in_name)
     name = in_name;
 }
 
+DefFunctionNode::DefFunctionNode(const DefFunctionNode &other)
+{
+    name = other.name;
+}
+
+std::string DefFunctionNode::getName() const
+{
+    return name;
+}
+
 void DefFunctionNode::info()
 {
     std::cout << "Function: " << this->name << std::endl;
@@ -20,6 +30,11 @@ ParamNode::ParamNode(std::string &in_name)
     name = in_name;
 }
 
+ParamNode::ParamNode(const ParamNode& other)
+{
+    name = other.name;
+}
+
 void ConstNode::info()
 {
     std::cout << "Const: " << this->value << std::endl;
@@ -30,11 +45,22 @@ ConstNode::ConstNode(float in_value)
     value = in_value;
 }
 
+ConstNode::ConstNode(const ConstNode& other)
+{
+    value = other.value;
+}
+
+float ConstNode::getValue() const
+{
+    return value;
+}
+
 void DefinitionNode::addChild(DefinitionNode *node)
 {
     children.push_back(node);
 }
 
+//should remove by id for duplicated argument
 void DefinitionNode::removeChild(std::size_t child_number)
 {
     children.erase(children.begin() + child_number);
@@ -48,22 +74,24 @@ bool DefinitionNode::attachTraverse(DefinitionNode *current, DefinitionNode *par
 
         if (converted->getName() == arg_num)
         {
+            //add with copy constructor for multiple params
             parent->removeChild(number);
-            parent->addChild(arg);
+            parent->addChild(new ConstNode(*dynamic_cast<ConstNode*>(arg)));
             std::cout << "adding" << std::endl;
         }
     }
 
     for (std::size_t i = 0; i < current->children.size(); i++)
     {
-        if (attachTraverse(current->children[i], current, i, arg_num, arg))
+       /*if (attachTraverse(current->children[i], current, i, arg_num, arg))
         {
             return true;
         }
         else
         {
             return false;
-        }
+        }*/
+        attachTraverse(current->children[i], current, i, arg_num, arg);
     }
 }
 

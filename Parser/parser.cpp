@@ -18,6 +18,23 @@ fun -> sum(mod(#0, #1), 1)
 fun(4, 2)
 */
 
+float addition(std::vector<DefinitionNode *> arguments)
+{
+    float total = 0;
+
+    for (std::size_t i = 0; i < arguments.size(); i++)
+    {
+        total += dynamic_cast<ConstNode *>(arguments[i])->getValue();
+    }
+
+    return total;
+}
+
+Parser::Parser()
+{
+    defaults.push_back({"add", addition});
+}
+
 Function::Function(std::string in_name, DefinitionNode *in_node, bool in_default)
 {
     name = in_name;
@@ -107,6 +124,7 @@ void Parser::parse(std::vector<std::pair<Token, std::string>> tokens)
 
             parseExpression(++it, end, cur);
             cur->print(cur->getRoot());
+            std::cout << "result: " << executeTree(cur->getRoot()) << std::endl;
         }
     }
 }
@@ -157,7 +175,6 @@ void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterato
     }
 }
 
-/*
 procedure Parser::getDefault(std::string name)
 {
     for (std::size_t i = 0; i < defaults.size(); i++)
@@ -169,4 +186,34 @@ procedure Parser::getDefault(std::string name)
     }
 
     return nullptr;
-}*/
+}
+
+//add errors for incorrectly defined fucntions
+float Parser::executeTree(DefinitionNode* current_node)
+{
+    if(typeid(*current_node).hash_code() == typeid(DefFunctionNode).hash_code())
+    {
+        std::string fun_name = dynamic_cast<DefFunctionNode*>(current_node)->getName();
+        procedure current_procedure = getDefault(fun_name);
+
+        if(current_procedure)
+        {
+            std::vector<DefinitionNode*> args;
+            for(std::size_t i = 0; i < current_node->getChildren().size(); i++)
+            {
+                args.push_back(new ConstNode(executeTree(current_node->getChildren()[i])));
+            }
+
+            return current_procedure(args);
+        }
+        else
+        {
+            //only one argument which is a default or other function
+            return executeTree(current_node->getChildren()[0]);
+        }
+    }
+    else
+    {
+        return dynamic_cast<ConstNode*>(current_node)->getValue();
+    }
+}
