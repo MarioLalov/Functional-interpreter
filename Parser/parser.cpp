@@ -25,15 +25,16 @@ Function::Function(std::string in_name, DefinitionNode *in_node, bool in_default
     is_default = in_default;
 }
 
-void parseDefinition(std::vector<std::pair<Token, std::string>>::iterator &it,
-                     const std::vector<std::pair<Token, std::string>>::iterator &end,
-                     DefinitionNode *previous)
+void Parser::parseDefinition(std::vector<std::pair<Token, std::string>>::iterator &it,
+                             const std::vector<std::pair<Token, std::string>>::iterator &end,
+                             DefinitionNode *previous)
 {
     while ((*it).first != Token::RBracket)
     {
         switch ((*it).first)
         {
         case Token::FunName:
+        {
             DefinitionNode *current = new DefFunctionNode((*it).second);
             previous->addChild(current);
             it += 2;
@@ -43,19 +44,24 @@ void parseDefinition(std::vector<std::pair<Token, std::string>>::iterator &it,
             {
                 return;
             }
-            break;
+        }
+        break;
         case Token::Argument:
+        {
             previous->addChild(new ParamNode((*it).second));
             ++it;
-            break;
+        }
+        break;
         case Token::Comma:
             ++it;
             break;
         case Token::Number:
+        {
             previous->addChild(new ConstNode(std::stof((*it).second)));
             std::cout << (*it).second;
             ++it;
-            break;
+        }
+        break;
         default:
             // throw
             break;
@@ -90,64 +96,68 @@ void Parser::parse(std::vector<std::pair<Token, std::string>> tokens)
             {
                 head->addChild(new ParamNode((*it).second));
             }
+
+            definitions.push_back({fun_name, new Tree(head)});
+            Tree *tr = new Tree(head);
+            tr->print(tr->getRoot());
         }
         else if ((*it).first == Token::LBracket)
         {
-            --it;
+            Tree *cur = getDefintion(fun_name);
+
+            parseExpression(++it, end, cur);
+            cur->print(cur->getRoot());
         }
     }
 }
 
-/*void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterator &it,
-                             const std::vector<std::pair<Token, std::string>>::iterator &end,
-                             ExpressionNode *previous)
+Tree *Parser::getDefintion(std::string name)
 {
+    for (std::size_t i = 0; i < definitions.size(); i++)
+    {
+        if (definitions[i].first == name)
+        {
+            return definitions[i].second;
+        }
+    }
+
+    return nullptr;
+}
+
+void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterator &it,
+                             const std::vector<std::pair<Token, std::string>>::iterator &end,
+                             Tree *executing_fun)
+{
+    std::size_t arg_cnt = 0;
+
     while ((*it).first != Token::RBracket)
     {
         switch ((*it).first)
         {
         case Token::FunName:
-            procedure current_procedure = getDefault((*it).second);
-
-            if (!current_procedure)
-            {
-                return;
-            }
-
-            // get expression to evaluate
-            ExpFunctionNode *current = new ExpFunctionNode((*it).second, current_procedure);
-            previous->addChild(current);
-            it += 2;
-            parseExpression(it, end, current);
+        {
+            executing_fun->attachArgument(arg_cnt, getDefintion((*it).second)->getRoot());
             ++it;
-            if (it == end)
-            {
-                return;
-            }
-            break;
+        }
+        break;
         case Token::Comma:
+        {
+            arg_cnt++;
             ++it;
-            break;
+        }
+        break;
         case Token::Number:
-            previous->addChild(new NumberNode(std::stof((*it).second)));
-            std::cout << (*it).second;
+        {
+            executing_fun->attachArgument(arg_cnt, new ConstNode(std::stof((*it).second)));
             ++it;
-            break;
+        }
         default:
-            // throw
             break;
         }
     }
-}*/
-
-void parseExpression(std::vector<std::pair<Token, std::string>>::iterator &it,
-                     const std::vector<std::pair<Token, std::string>>::iterator &end)
-{
-    while ((*it).first != Token::RBracket)
-    {
-    }
 }
 
+/*
 procedure Parser::getDefault(std::string name)
 {
     for (std::size_t i = 0; i < defaults.size(); i++)
@@ -159,4 +169,4 @@ procedure Parser::getDefault(std::string name)
     }
 
     return nullptr;
-}
+}*/

@@ -2,7 +2,6 @@
 
 #include "../Lexer/lexer.h"
 #include "../DefintionTree/DefinitionTree.h"
-#include "../ExpressionTree/ExpressionTree.h"
 #include <iterator>
 
 class Function
@@ -18,15 +17,18 @@ public:
 class Parser
 {
 private:
-    std::vector<Function> definitions;
-    std::vector<std::pair<std::string,procedure>> defaults;
+    std::vector<std::pair<std::string, Tree*>> definitions;
+    //std::vector<std::pair<std::string,procedure>> defaults;
 
 public:
-    procedure getDefault(std::string name);
+    //procedure getDefault(std::string name);
+    Tree* getDefintion(std::string name);
     void parse(std::vector<std::pair<Token, std::string>> tokens);
     void parseDefinition(std::vector<std::pair<Token, std::string>>::iterator &it,
                          const std::vector<std::pair<Token, std::string>>::iterator &end,
                          DefinitionNode *previous);
     void parseExpression(std::vector<std::pair<Token, std::string>>::iterator &it,
-                         const std::vector<std::pair<Token, std::string>>::iterator &end);
+                         const std::vector<std::pair<Token, std::string>>::iterator &end,
+                         Tree* executing_fun);
+
 };

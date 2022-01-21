@@ -9,6 +9,8 @@
 #include "Variables/default_function.h"*/
 
 #include "Lexer/lexer.h"
+#include "Parser/parser.h"
+#include "DefintionTree/DefinitionTree.h"
 #include <iterator>
 #include <string>
 
@@ -35,80 +37,27 @@ int main()
      delete test;
  */
 
-    std::string expression = "fun -> sum(mod(#0, #1), 1)";
-    Lexer lex(expression);
+    std::string defintion = "fun -> sum(mod(#0, #0), 1)";
+    std::string expression = "fun(5)";
+    Lexer lex1(defintion);
+    Lexer lex2(expression);
     // lex.print();
+    std::cout << "smth"; 
 
-    std::vector<std::pair<Token, std::string>> list = lex.exportTokens();
-    std::vector<std::pair<Token, std::string>>::iterator it = list.begin();
 
-    fullPrint(it, list.end());
+
+    std::vector<std::pair<Token, std::string>> list1 = lex1.exportTokens();
+    std::vector<std::pair<Token, std::string>> list2 = lex2.exportTokens();
+    //std::vector<std::pair<Token, std::string>>::iterator it = list.begin();
+    Parser parse;
+    parse.parse(list1);
+    std::cout << "strat new" << std::endl;
+    parse.parse(list2);
+
+    std::string str = "#0";
+
+    DefinitionNode* smth = new ParamNode(str);
+    std::cout << "output: " << (typeid(*smth).hash_code() == typeid(ParamNode).hash_code()) << std::endl;
 
     return 0;
-}
-
-void fullPrint(std::vector<std::pair<Token, std::string>>::iterator &it, const std::vector<std::pair<Token, std::string>>::iterator& end)
-{
-    if ((*it).first == Token::FunName)
-    {
-        ++it;
-        if ((*it).first == Token::FunDefinition)
-        {
-            ++it;
-            if((*it).first == Token::FunName)
-            {
-                print(it, end);
-            }
-            else if((*it).first == Token::Number)
-            {
-                std::cout << (*it).second << " ";
-            }
-            else if((*it).first == Token::Argument)
-            {
-                std::cout << (*it).second << " ";
-            }
-        }
-    }
-
-}
-
-void print(std::vector<std::pair<Token, std::string>>::iterator &it, const std::vector<std::pair<Token, std::string>>::iterator& end)
-{
-    while ((*it).first != Token::RBracket)
-    {
-        switch ((*it).first)
-        {
-        case Token::FunName:
-            // atach
-            std::cout << (*it).second << "( ";
-            it += 2;
-            print(it, end);
-            ++it;
-            if(it == end)
-            {
-                return;
-            }
-            break;
-        case Token::Argument:
-            // atach
-            std::cout << (*it).second;
-            ++it;
-            break;
-        case Token::Comma:
-            // skip
-            std::cout << ", ";
-            ++it;
-            break;
-        case Token::Number:
-            // attach const
-            std::cout << (*it).second;
-            ++it;
-            break;
-        default:
-            std::cout << "Unknown!!!" << (*it).second;
-            break;
-        }
-    }
-
-    std::cout << ")";
 }
