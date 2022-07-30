@@ -3,6 +3,7 @@
 #include "../Lexer/lexer.h"
 #include "../DefintionTree/DefinitionTree.h"
 #include <iterator>
+#include <cmath>
 
 typedef float (*procedure)(std::vector<DefinitionNode *>);
 
@@ -37,4 +38,6 @@ Parser();
 };
 
 //defaults
+//TODO: add args validation
 float addition(std::vector<DefinitionNode *> arguments);
+float modulo(std::vector<DefinitionNode *> arguments);

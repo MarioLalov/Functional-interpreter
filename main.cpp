@@ -37,16 +37,14 @@ int main()
      delete test;
  */
 
-    //std::string defintion = "fun -> sum(mod(#0, #1), 1)";
-    //std::string expression = "fun(5, 2)";
-    std::string defintion = "fun -> add(add(#0, #1), 1)";
-    std::string expression = "fun(7, 2)";
+    std::string defintion = "fun -> add(mod(#0, #1), mod(#2, #3))";
+    std::string expression = "fun(5, 2, 5, 3)";
+    //std::string defintion = "fun -> add(add(#0, #1), 1)";
+    //std::string expression = "fun(7, 2)";
     Lexer lex1(defintion);
     Lexer lex2(expression);
     // lex.print();
     std::cout << "smth"; 
-
-
 
     std::vector<std::pair<Token, std::string>> list1 = lex1.exportTokens();
     std::vector<std::pair<Token, std::string>> list2 = lex2.exportTokens();

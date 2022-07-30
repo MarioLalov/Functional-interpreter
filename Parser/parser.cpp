@@ -30,9 +30,29 @@ float addition(std::vector<DefinitionNode *> arguments)
     return total;
 }
 
+float modulo(std::vector<DefinitionNode *> arguments)
+{
+    if (arguments.size() != 2)
+    {
+        throw std::invalid_argument("Invalid number of arguments in call of function mod().\nexpected: 2\ngiven: " + arguments.size());
+    }
+
+    float first = dynamic_cast<ConstNode *>(arguments[0])->getValue();
+    float second = dynamic_cast<ConstNode *>(arguments[1])->getValue();
+
+    //check if arguments are integers
+    if (std::ceil(first) != first || std::ceil(second) != second)
+    {
+        throw std::invalid_argument("Contract violation.\nexpected: integer\ngiven: double");
+    }
+
+    return ((int)first % (int)second);
+}
+
 Parser::Parser()
 {
     defaults.push_back({"add", addition});
+    defaults.push_back({"mod", modulo});
 }
 
 Function::Function(std::string in_name, DefinitionNode *in_node, bool in_default)
@@ -146,6 +166,7 @@ void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterato
                              const std::vector<std::pair<Token, std::string>>::iterator &end,
                              Tree *executing_fun)
 {
+    //must tree copy 
     std::size_t arg_cnt = 0;
 
     while ((*it).first != Token::RBracket)
@@ -154,7 +175,9 @@ void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterato
         {
         case Token::FunName:
         {
-            executing_fun->attachArgument(arg_cnt, getDefintion((*it).second)->getRoot());
+            //do some checks here
+            Tree* fun = getDefintion((*it).second);
+            executing_fun->attachArgument(arg_cnt, new DefFunctionNode(*dynamic_cast<DefFunctionNode *>(fun->getRoot())));
             ++it;
         }
         break;

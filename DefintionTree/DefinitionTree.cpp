@@ -8,6 +8,18 @@ DefFunctionNode::DefFunctionNode(std::string &in_name)
 DefFunctionNode::DefFunctionNode(const DefFunctionNode &other)
 {
     name = other.name;
+
+    for (std::size_t i = 0; i < other.children.size(); i++)
+    {
+        if (typeid(*other.children[i]).hash_code() == typeid(DefFunctionNode).hash_code())
+        {
+            this->addChild(new DefFunctionNode(*dynamic_cast<DefFunctionNode *>(other.children[i])));
+        }
+        else if (typeid(*other.children[i]).hash_code() == typeid(ConstNode).hash_code())
+        {
+            this->addChild(new ConstNode(*dynamic_cast<ConstNode *>(other.children[i])));
+        }
+    }
 }
 
 std::string DefFunctionNode::getName() const
@@ -30,7 +42,7 @@ ParamNode::ParamNode(std::string &in_name)
     name = in_name;
 }
 
-ParamNode::ParamNode(const ParamNode& other)
+ParamNode::ParamNode(const ParamNode &other)
 {
     name = other.name;
 }
@@ -45,7 +57,7 @@ ConstNode::ConstNode(float in_value)
     value = in_value;
 }
 
-ConstNode::ConstNode(const ConstNode& other)
+ConstNode::ConstNode(const ConstNode &other)
 {
     value = other.value;
 }
@@ -60,7 +72,7 @@ void DefinitionNode::addChild(DefinitionNode *node)
     children.push_back(node);
 }
 
-//should remove by id for duplicated argument
+// should remove by id for duplicated argument
 void DefinitionNode::removeChild(std::size_t child_number)
 {
     children.erase(children.begin() + child_number);
@@ -74,23 +86,31 @@ bool DefinitionNode::attachTraverse(DefinitionNode *current, DefinitionNode *par
 
         if (converted->getName() == arg_num)
         {
-            //add with copy constructor for multiple params
-            parent->removeChild(number);
-            parent->addChild(new ConstNode(*dynamic_cast<ConstNode*>(arg)));
-            std::cout << "adding" << std::endl;
+            if (typeid(*arg).hash_code() == typeid(ConstNode).hash_code())
+            {
+                // add with copy constructor for multiple params
+                parent->removeChild(number);
+                parent->addChild(new ConstNode(*dynamic_cast<ConstNode *>(arg)));
+                std::cout << "adding" << std::endl;
+            }
+            else if (typeid(*arg).hash_code() == typeid(DefFunctionNode).hash_code())
+            {
+                parent->removeChild(number);
+                parent->addChild(new DefFunctionNode(*dynamic_cast<DefFunctionNode *>(arg)));
+            }
         }
     }
 
     for (std::size_t i = 0; i < current->children.size(); i++)
     {
-       /*if (attachTraverse(current->children[i], current, i, arg_num, arg))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }*/
+        /*if (attachTraverse(current->children[i], current, i, arg_num, arg))
+         {
+             return true;
+         }
+         else
+         {
+             return false;
+         }*/
         attachTraverse(current->children[i], current, i, arg_num, arg);
     }
 }
