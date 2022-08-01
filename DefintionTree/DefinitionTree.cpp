@@ -143,6 +143,52 @@ std::string ParamNode::getName() const
     return name;
 }
 
+DefinitionNode* Tree::_copyHelper(DefinitionNode* other) const
+{ 
+    if(other == nullptr)
+    {
+        return nullptr;
+    }
+
+    DefinitionNode* newNode = nullptr;
+
+    if(typeid(*other).hash_code() == typeid(ParamNode).hash_code())
+    {
+        ParamNode* buff = dynamic_cast<ParamNode*>(other);
+
+        newNode = new ParamNode(buff->getName());
+    }
+    if(typeid(*other).hash_code() == typeid(ConstNode).hash_code())
+    {
+        ConstNode* buff = dynamic_cast<ConstNode*>(other);
+
+        newNode = new ConstNode(buff->getValue());
+    }
+    if(typeid(*other).hash_code() == typeid(DefFunctionNode).hash_code())
+    {
+        DefFunctionNode* buff = dynamic_cast<DefFunctionNode*>(other);
+
+        newNode = new DefFunctionNode(*buff);
+    }
+
+    const std::vector<DefinitionNode*> otherChildren = other->getChildren();
+    for(std::size_t i = 0; i < otherChildren.size(); i++)
+    {
+        DefinitionNode* copiedNode = _copyHelper(otherChildren.at(i));
+
+        if(copiedNode)
+            newNode->addChild(copiedNode);
+    }
+
+    return newNode;
+}
+
+Tree* Tree::getCopy() const
+{
+    Tree* copy = new Tree();
+    copy->root = _copyHelper(this->root);
+}
+
 void Tree::print(DefinitionNode *root)
 {
     // queue to store the elements on the current level

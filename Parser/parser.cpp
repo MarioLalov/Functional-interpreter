@@ -141,6 +141,7 @@ void Parser::parse(std::vector<std::pair<Token, std::string>> tokens)
         else if ((*it).first == Token::LBracket)
         {
             Tree *cur = getDefintion(fun_name);
+            Tree *treeCopy = cur->getCopy();
 
             parseExpression(++it, end, cur);
             cur->print(cur->getRoot());
@@ -166,7 +167,7 @@ void Parser::parseExpression(std::vector<std::pair<Token, std::string>>::iterato
                              const std::vector<std::pair<Token, std::string>>::iterator &end,
                              Tree *executing_fun)
 {
-    //must tree copy 
+    //must use tree copy 
     std::size_t arg_cnt = 0;
 
     while ((*it).first != Token::RBracket)

@@ -96,10 +96,15 @@ void info() override;
 class Tree
 {
 private:
-    DefinitionNode *root;
+    DefinitionNode *root = nullptr;
+
+    DefinitionNode* _copyHelper(DefinitionNode* other) const;
 
 public:
+    Tree();
     Tree(DefinitionNode *in_root);
+    Tree* getCopy() const;
+
     void attachArgument(std::size_t arg_num, DefinitionNode *arg);
     DefinitionNode *getRoot();
     void print(DefinitionNode *current);
